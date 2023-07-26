@@ -32,3 +32,9 @@ Route::group([
         Route::get('data', [AuthController::class, 'data']);
     });
 });
+
+Route::group([
+    'middleware' => 'auth:api'
+], function () {
+    Route::resource('kendaraan', KendaraanController::class);
+});
