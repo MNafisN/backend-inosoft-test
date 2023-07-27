@@ -49,3 +49,10 @@ Route::group([
         Route::get('motor/terjual', [KendaraanController::class, 'getAllTerjualMotor']);
     });
 });
+
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'penjualan'
+], function () {
+    Route::get('list', [PenjualanController::class, 'getPenjualanHistory']);
+});
