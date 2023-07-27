@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Services\KendaraanService;
 use Illuminate\Http\JsonResponse;
+use InvalidArgumentException;
 
 class KendaraanController extends Controller
 {
@@ -31,10 +32,17 @@ class KendaraanController extends Controller
     public function index(): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->getAll());
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->getAll()
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -55,17 +63,26 @@ class KendaraanController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $data = $request->all();
         try {
-            if ($request->tipe_kendaraan == 'motor') {
-                $datatervalidasi = $this->motorService->validator($request);
-                return response()->json($this->kendaraanService->store($datatervalidasi));
+            if ($data['tipe_kendaraan'] == 'mobil') {
+                $dataTervalidasi = $this->mobilService->validatorMobil($data);
+            } else if ($data['tipe_kendaraan'] == 'motor') {
+                $dataTervalidasi = $this->motorService->validatorMotor($data);
             } else {
-                $datatervalidasi = $this->mobilService->validator($request);
-                return response()->json($this->kendaraanService->store($datatervalidasi));
+                throw new InvalidArgumentException('Tipe kendaraan yang tersedia hanya mobil dan motor');
             }
+            $result = [
+                'status' => 201,
+                'data' => $this->kendaraanService->store($dataTervalidasi)
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 422,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -77,10 +94,17 @@ class KendaraanController extends Controller
     public function show(string $kendaraanId): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->findById($kendaraanId));
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->findById($kendaraanId)
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -98,32 +122,53 @@ class KendaraanController extends Controller
      * Simpan data kendaraan yang ingin diperbarui.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $kendaraanId
+     * @param  string  $kendaraanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, string $kendaraanId): JsonResponse
     {
+        $data = $request->all();
         try {
-            $datatervalidasi = $this->motorService->validator($request);
-            return response()->json($this->kendaraanService->update($datatervalidasi, $kendaraanId));
+            if ($data['tipe_kendaraan'] == 'mobil') {
+                $dataTervalidasi = $this->mobilService->validatorMobil($data);
+            } else if ($data['tipe_kendaraan'] == 'motor') {
+                $dataTervalidasi = $this->motorService->validatorMotor($data);
+            } else {
+                throw new InvalidArgumentException('Tipe kendaraan yang tersedia hanya mobil dan motor');
+            }
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->update($dataTervalidasi, $kendaraanId)
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 422,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
      * Hapus data kendaraan berdasarkan id.
      *
-     * @param  int  $kendaraanId
+     * @param  string  $kendaraanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $kendaraanId): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->deleteById($kendaraanId));
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->deleteById($kendaraanId)
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -134,10 +179,17 @@ class KendaraanController extends Controller
     public function getAllMobil(): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->getAllMobil());
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->getAllMobil()
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -148,10 +200,17 @@ class KendaraanController extends Controller
     public function getAllStockMobil(): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->getAllStockMobil());
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->getAllStockMobil()
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -162,10 +221,17 @@ class KendaraanController extends Controller
     public function getAllTerjualMobil(): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->getAllTerjualMobil());
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->getAllTerjualMobil()
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -176,10 +242,17 @@ class KendaraanController extends Controller
     public function getAllMotor(): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->getAllMotor());
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->getAllMotor()
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -190,10 +263,17 @@ class KendaraanController extends Controller
     public function getAllStockMotor(): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->getAllStockMotor());
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->getAllStockMotor()
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -204,9 +284,16 @@ class KendaraanController extends Controller
     public function getAllTerjualMotor(): JsonResponse
     {
         try {
-            return response()->json($this->kendaraanService->getAllTerjualMotor());
+            $result = [
+                'status' => 200,
+                'data' => $this->kendaraanService->getAllTerjualMotor()
+            ];
         } catch (Exception $err) {
-            return response()->json($err->getMessage());
+            $result = [
+                'status' => 404,
+                'error' => $err->getMessage()
+            ];
         }
+        return response()->json($result, $result['status']);
     }
 }

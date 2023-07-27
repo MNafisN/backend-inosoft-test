@@ -19,23 +19,23 @@ class KendaraanService
     /**
      * Untuk validasi atribut utama pada form tambah/update data kendaraan.
      */
-    public function validator($request)
+    public function validatorKendaraan(array $data): array
     {
-        $validator = Validator::make($request, [
+        $validator = Validator::make($data, [
             'nama_kendaraan' => 'required|unique:App\Models\Kendaraan,nama_kendaraan',
             'tahun_keluaran' => 'required|numeric|min:1900|max:2500',
-            'warna' => ['required', 'string'],
-            'harga' => ['required', 'numeric'],
-            'stok' => ['required', 'numeric'],
-            'terjual' => ['required', 'numeric'],
-            'tipe_kendaraan' => ['required', Rule::in(['motor', 'mobil'])],
+            'warna' => 'required|string',
+            'harga' => 'required|numeric',
+            'stok' => 'required|numeric',
+            'terjual' => 'required|numeric',
+            'tipe_kendaraan' => 'required|in:motor,mobil',
         ]);
 
         if ($validator->fails()) {
             throw new InvalidArgumentException($validator->errors()->first());
         }
-        
-        return ($request);
+
+        return $data;
     }
 
     /**
@@ -43,7 +43,11 @@ class KendaraanService
      */
     public function getAll(): ?Object
     {
-        return $this->KendaraanRepository->getAll();
+        $kendaraan = $this->KendaraanRepository->getAll();
+        if ($kendaraan->isEmpty()) {
+            throw new InvalidArgumentException('Data kendaraan pada database kosong');
+        }
+        return $kendaraan;
     }
 
     /**
@@ -51,13 +55,17 @@ class KendaraanService
      */
     public function findById(string $id): Object
     {
-        return $this->KendaraanRepository->getById($id);
+        $kendaraan = $this->KendaraanRepository->getById($id);
+        if (!$kendaraan) {
+            throw new InvalidArgumentException('Data kendaraan tidak ditemukan');
+        }
+        return $kendaraan;
     }
 
     /**
      * Simpan data kendaraan baru.
      */
-    public function store($data): Object
+    public function store(array $data): Object
     {
         return $this->KendaraanRepository->store($data);
     }
@@ -65,8 +73,12 @@ class KendaraanService
     /**
      * Simpan data kendaraan yang ingin diperbarui.
      */
-    public function update($data, string $id): Object
+    public function update(array $data, string $id): Object
     {
+        $kendaraan = $this->KendaraanRepository->getById($id);
+        if (!$kendaraan) {
+            throw new InvalidArgumentException('Data kendaraan tidak ditemukan');
+        }
         return $this->KendaraanRepository->update($data, $id);
     }
 
@@ -75,6 +87,10 @@ class KendaraanService
      */
     public function deleteById(string $id): string
     {
+        $kendaraan = $this->KendaraanRepository->getById($id);
+        if (!$kendaraan) {
+            throw new InvalidArgumentException('Data kendaraan tidak ditemukan');
+        }
         return $this->KendaraanRepository->deleteById($id);
     }
 
@@ -83,7 +99,11 @@ class KendaraanService
      */
     public function getAllMobil(): Object
     {
-        return $this->KendaraanRepository->getAllMobil();
+        $kendaraan = $this->KendaraanRepository->getAllMobil();
+        if ($kendaraan->isEmpty()) {
+            throw new InvalidArgumentException('Data kendaraan jenis mobil pada database kosong');
+        }
+        return $kendaraan;
     }
 
     /**
@@ -91,7 +111,11 @@ class KendaraanService
      */
     public function getAllStockMobil(): Object
     {
-        return $this->KendaraanRepository->getAllStockMobil();
+        $kendaraan = $this->KendaraanRepository->getAllStockMobil();
+        if ($kendaraan->isEmpty()) {
+            throw new InvalidArgumentException('Data kendaraan jenis mobil pada database kosong');
+        }
+        return $kendaraan;
     }
 
     /**
@@ -99,7 +123,11 @@ class KendaraanService
      */
     public function getAllTerjualMobil(): Object
     {
-        return $this->KendaraanRepository->getAllTerjualMobil();
+        $kendaraan = $this->KendaraanRepository->getAllTerjualMobil();
+        if ($kendaraan->isEmpty()) {
+            throw new InvalidArgumentException('Data kendaraan jenis mobil pada database kosong');
+        }
+        return $kendaraan;
     }
 
     /**
@@ -107,7 +135,11 @@ class KendaraanService
      */
     public function getAllMotor(): Object
     {
-        return $this->KendaraanRepository->getAllMotor();
+        $kendaraan = $this->KendaraanRepository->getAllMotor();
+        if ($kendaraan->isEmpty()) {
+            throw new InvalidArgumentException('Data kendaraan jenis motor pada database kosong');
+        }
+        return $kendaraan;
     }
 
     /**
@@ -115,7 +147,11 @@ class KendaraanService
      */
     public function getAllStockMotor(): Object
     {
-        return $this->KendaraanRepository->getAllStockMotor();
+        $kendaraan = $this->KendaraanRepository->getAllStockMotor();
+        if ($kendaraan->isEmpty()) {
+            throw new InvalidArgumentException('Data kendaraan jenis motor pada database kosong');
+        }
+        return $kendaraan;
     }
 
     /**
@@ -123,6 +159,10 @@ class KendaraanService
      */
     public function getAllTerjualMotor(): Object
     {
-        return $this->KendaraanRepository->getAllTerjualMotor();
+        $kendaraan = $this->KendaraanRepository->getAllTerjualMotor();
+        if ($kendaraan->isEmpty()) {
+            throw new InvalidArgumentException('Data kendaraan jenis motor pada database kosong');
+        }
+        return $kendaraan;
     }
 }

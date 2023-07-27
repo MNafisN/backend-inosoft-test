@@ -43,7 +43,7 @@ class KendaraanRepository
     /**
      * Simpan data kendaraan baru.
      */
-    public function store($data): Object
+    public function store(array $data): Object
     {
         $kendaraan = new Kendaraan;
 
@@ -59,9 +59,9 @@ class KendaraanRepository
             $kendaraan->mesin = $data['mesin'];
             $kendaraan->tipe_suspensi = $data['tipe_suspensi'];
             $kendaraan->tipe_transmisi = $data['tipe_transmisi'];
-        } else {
+        } else if ($data['tipe_kendaraan'] == "mobil") {
             $kendaraan->mesin = $data['mesin'];
-            $kendaraan->kapasistas_penumpang = $data['kapasistas_penumpang'];
+            $kendaraan->kapasistas_penumpang = $data['kapasitas_penumpang'];
             $kendaraan->tipe = $data['tipe'];
         }
 
@@ -73,7 +73,7 @@ class KendaraanRepository
     /**
      * Simpan data kendaraan yang ingin diperbarui.
      */
-    public function update($data, string $id): Object
+    public function update(array $data, string $id): Object
     {
         $kendaraan = Kendaraan::find($id);
 
@@ -89,9 +89,9 @@ class KendaraanRepository
             $kendaraan->mesin = $data['mesin'];
             $kendaraan->tipe_suspensi = $data['tipe_suspensi'];
             $kendaraan->tipe_transmisi = $data['tipe_transmisi'];
-        } else {
+        } else if ($data['tipe_kendaraan'] == "mobil") {
             $kendaraan->mesin = $data['mesin'];
-            $kendaraan->kapasistas_penumpang = $data['kapasistas_penumpang'];
+            $kendaraan->kapasistas_penumpang = $data['kapasitas_penumpang'];
             $kendaraan->tipe = $data['tipe'];
         }
 
@@ -105,7 +105,9 @@ class KendaraanRepository
      */
     public function deleteById(string $id): string
     {
-        return $this->kendaraan->destroy($id) ? 'Data Deleted' : 'Data Not Found';
+        $kendaraan = $this->getById($id);
+        $nama = $kendaraan->nama_kendaraan;
+        return $this->kendaraan->destroy($id) ? "Data Kendaraan ". $nama ." Dihapus" : "Data Not Found";
     }
 
     /**

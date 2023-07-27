@@ -18,16 +18,16 @@ class MotorService extends KendaraanService
     /**
      * Untuk validasi atribut motor pada form tambah/update data kendaraan.
      */
-    public function validator($data)
+    public function validatorMotor(array $data): array
     {
-        $data = parent::validator($data->all());
+        $formData = parent::validatorKendaraan($data);
 
-        $validator = Validator::make($data, [
-            'mesin' => ['required', 'string'],
-            'tipe_suspensi' => ['required', 'string'],
-            'tipe_transmisi' => ['required', 'string'],
+        $validator = Validator::make($formData, [
+            'mesin' => 'required|string',
+            'tipe_suspensi' => 'required|string',
+            'tipe_transmisi' => 'required|string',
         ]);
-        
+
         if ($validator->fails()) {
             throw new InvalidArgumentException($validator->errors()->first());
         }

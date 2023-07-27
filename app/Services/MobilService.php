@@ -18,16 +18,16 @@ class MobilService extends KendaraanService
     /**
      * Untuk validasi atribut mobil pada form tambah/update data kendaraan.
      */
-    public function validator($data)
+    public function validatorMobil(array $data): array
     {
-        $data = parent::validator($data->all());
+        $formData = parent::validatorKendaraan($data);
 
-        $validator = Validator::make($data, [
-            'mesin' => ['required', 'string'],
-            'kapasitas_penumpang' => ['required', 'numeric'],
-            'tipe' => ['required', 'string'],
+        $validator = Validator::make($formData, [
+            'mesin' => 'required|string',
+            'kapasitas_penumpang' => 'required|numeric',
+            'tipe' => 'required|string',
         ]);
-        
+
         if ($validator->fails()) {
             throw new InvalidArgumentException($validator->errors()->first());
         }
