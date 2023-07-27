@@ -13,6 +13,7 @@ class PenjualanController extends Controller
 
     public function __construct(PenjualanService $penjualanService)
     {
+        $this->middleware('auth:api');
         $this->penjualanService = $penjualanService;
     }
 
