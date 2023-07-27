@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\PenjualanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,4 +56,6 @@ Route::group([
     'prefix' => 'penjualan'
 ], function () {
     Route::get('list', [PenjualanController::class, 'getPenjualanHistory']);
+    Route::get('list/{nama}', [PenjualanController::class, 'getPenjualanHistoryKendaraan']);
+    Route::post('buy', [PenjualanController::class, 'beliKendaraan']);
 });

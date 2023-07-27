@@ -101,6 +101,24 @@ class KendaraanRepository
     }
 
     /**
+     * Perbarui jumlah stok kendaraan setelah transaksi beli kendaraan.
+     */
+    public function updateStok(string $nama, int $jumlah): void
+    {
+        $kendaraan = $this->getByName($nama);
+
+        $stok = $kendaraan->stok;
+        $terjual = $kendaraan->terjual;
+        $stok -= $jumlah;
+        $terjual += $jumlah;
+        $kendaraan->stok = $stok;
+        $kendaraan->terjual = $terjual;
+
+        $kendaraan->update();
+        // return $kendaraan->fresh();
+    }
+
+    /**
      * Hapus data kendaraan berdasarkan id.
      */
     public function deleteById(string $id): string
